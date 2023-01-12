@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Models\Post;
+use App\Models\Post;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -23,9 +23,9 @@ class PostsController extends Controller
                     'message' => 'Run no encontrado'
                 ], 404);
             }
-            $posts = $response->data;
+            $postsApi = $response->data;
             $count = 0;
-            foreach ($posts as $postApi){
+            foreach ($postsApi as $postApi){
                 $post = Post::where('id', $postApi['id'])
                     ->first();
                 $numberTitle = str_word_count($postApi['title'], 0);
@@ -36,6 +36,7 @@ class PostsController extends Controller
                     $postUpdate->update(array('body' => $postApi['body']));
                 } else {
                     $post = new Post();
+                    $post->id = $postApi['id'];
                     $post->user_id = $postApi['userId'];
                     $post->title = $postApi['title'];
                     $post->body = $postApi['body'];
