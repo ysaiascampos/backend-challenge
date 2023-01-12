@@ -21,6 +21,14 @@ class User extends Model
         'city'
     ];
 
+    protected $hidden = array(
+        'password',
+        'remember_token',
+        'deleted_at',
+        'created_at',
+        'updated_at'
+    );
+
     /*
      * Get the posts for the user.
      */

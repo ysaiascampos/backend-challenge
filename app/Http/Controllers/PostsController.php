@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\ConectarApiController;
 use Illuminate\Support\Facades\Response;
+Use DB;
 
 class PostsController extends Controller
 {
@@ -20,7 +21,7 @@ class PostsController extends Controller
                 201
             ])) {
                 return response()->json([
-                    'message' => 'Run no encontrado'
+                    'message' => 'Error no encontrado'
                 ], 404);
             }
             $postsApi = $response->data;
@@ -57,5 +58,32 @@ class PostsController extends Controller
             'data' => $posts
         ], 200);
 
+    }
+
+    public function getBestPosts(){
+        $users = DB::select("SELECT users.name, posts.id, posts.title, posts.body, posts.rating
+                FROM users
+                inner Join posts on posts.user_id = users.id
+                GROUP BY users.name
+                HAVING max(posts.rating) = posts.rating");
+
+        return response()->json([
+            'data' => $users
+        ], 200);
+    }
+
+    public function getPost($id){
+        $post = Post::where('posts.id', $id)
+            ->join('users', 'users.id', '=', 'posts.user_id')
+            ->select('users.name','posts.id', 'posts.title', 'posts.body')
+            ->first();
+        if(!$post){
+            return response()->json([
+                'message' => 'si no existe'
+            ], 404);
+        }
+        return response()->json([
+            'data' => $post
+        ], 200);
     }
 }

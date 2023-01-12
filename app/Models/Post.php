@@ -20,4 +20,20 @@ class Post extends Model
     public $timestamps = true;
 
     use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'user_id', 'title', 'body', 'rating'
+    ];
+
+
+    protected $hidden = array(
+        'deleted_at',
+        'created_at',
+        'updated_at'
+    );
 }
